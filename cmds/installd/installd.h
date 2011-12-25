@@ -63,6 +63,8 @@
 
 #define DATA_SUBDIR             "data/" // sub-directory under ANDROID_DATA
 
+#define DATA_SUBDIR             "data/" // sub-directory under ANDROID_DATA
+
 #define APP_SUBDIR             "app/" // sub-directory under ANDROID_DATA
 #define PRIV_APP_SUBDIR        "priv-app/" // sub-directory under ANDROID_DATA
 
