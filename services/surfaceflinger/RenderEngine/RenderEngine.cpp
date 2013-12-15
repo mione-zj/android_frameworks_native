@@ -250,6 +250,14 @@ void RenderEngine::flush() {
     glFlush();
 }
 
+void RenderEngine::setDither(bool dither) {
+    if (dither) {
+        glEnable(GL_DITHER);
+    } else {
+        glDisable(GL_DITHER);
+    }
+}
+
 void RenderEngine::dump(String8& result) {
     const GLExtensions& extensions(GLExtensions::getInstance());
     result.appendFormat("GLES: %s, %s, %s\n",
