@@ -31,7 +31,6 @@ namespace android {
 
 status_t BatteryProperties::readFromParcel(Parcel* p) {
     chargerAcOnline = p->readInt32() == 1 ? true : false;
-    chargerDockAcOnline = p->readInt32() == 1 ? true : false;
     chargerUsbOnline = p->readInt32() == 1 ? true : false;
     chargerWirelessOnline = p->readInt32() == 1 ? true : false;
 
@@ -43,6 +42,7 @@ status_t BatteryProperties::readFromParcel(Parcel* p) {
     batteryTemperature = p->readInt32();
     batteryTechnology = String8((p->readString16()).string());
 
+    chargerDockAcOnline = p->readInt32() == 1 ? true : false;
     dockBatterySupported = p->readInt32() == 1 ? true : false;
     dockBatteryStatus = p->readInt32();
     dockBatteryHealth = p->readInt32();
@@ -59,7 +59,6 @@ status_t BatteryProperties::readFromParcel(Parcel* p) {
 
 status_t BatteryProperties::writeToParcel(Parcel* p) const {
     p->writeInt32(chargerAcOnline ? 1 : 0);
-    p->writeInt32(chargerDockAcOnline ? 1 : 0);
     p->writeInt32(chargerUsbOnline ? 1 : 0);
     p->writeInt32(chargerWirelessOnline ? 1 : 0);
 
@@ -71,6 +70,7 @@ status_t BatteryProperties::writeToParcel(Parcel* p) const {
     p->writeInt32(batteryTemperature);
     p->writeString16(String16(batteryTechnology));
 
+    p->writeInt32(chargerDockAcOnline ? 1 : 0);
     p->writeInt32(dockBatterySupported ? 1 : 0);
     p->writeInt32(dockBatteryStatus);
     p->writeInt32(dockBatteryHealth);
