@@ -156,6 +156,13 @@ typedef enum OMX_COLOR_FORMATTYPE {
      * Android-specific OMX IL colorformats. Change this enum to
      * an acceptable range once that is done.
      * */
+
+#ifdef MTK_HARDWARE
+    OMX_COLOR_FormatVendorMTKYUV = 0x7F000001,
+    OMX_COLOR_FormatVendorMTKYUV_FCM = 0x7F000002,
+    OMX_MTK_COLOR_FormatYV12 = 0x7F000200,
+#endif
+
     OMX_COLOR_FormatAndroidOpaque = 0x7F000789,
     /** Flexible 8-bit YUV format.  Codec should report this format
      *  as being supported if it supports any YUV420 packed planar
@@ -169,7 +176,7 @@ typedef enum OMX_COLOR_FORMATTYPE {
     OMX_QCOM_COLOR_FormatYUV420PackedSemiPlanar64x32Tile2m8ka = 0x7FA30C03,
     OMX_SEC_COLOR_FormatNV12Tiled = 0x7FC00002,
     OMX_QCOM_COLOR_FormatYUV420PackedSemiPlanar32m = 0x7FA30C04,
-    OMX_COLOR_FormatMax = 0x7FFFFFFF
+    OMX_COLOR_FormatMax = 0x7FFFFFFF,
 } OMX_COLOR_FORMATTYPE;
 
 
