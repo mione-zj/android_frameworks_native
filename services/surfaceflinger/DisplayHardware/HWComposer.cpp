@@ -840,14 +840,13 @@ status_t HWComposer::prepare() {
                 disp.hasFbComp = false;
                 disp.hasOvComp = false;
                 if (disp.list) {
-                    for (size_t j=0 ; j<disp.list->numHwLayers ; j++) {
-                        hwc_layer_1_t& l = disp.list->hwLayers[j];
+                    for (size_t i=0 ; i<hwcNumHwLayers(mHwc, disp.list) ; i++) {
+                        hwc_layer_1_t& l = disp.list->hwLayers[i];
 
                         //ALOGD("prepare: %d, type=%d, handle=%p",
                         //        i, l.compositionType, l.handle);
 
-                        if ((i == DisplayDevice::DISPLAY_PRIMARY) &&
-                                    l.flags & HWC_SKIP_LAYER) {
+                        if (l.flags & HWC_SKIP_LAYER) {
                             l.compositionType = HWC_FRAMEBUFFER;
                         }
                         if (l.compositionType == HWC_FRAMEBUFFER) {
@@ -1002,34 +1001,18 @@ status_t HWComposer::commit() {
 status_t HWComposer::setPowerMode(int disp, int mode) {
     LOG_FATAL_IF(disp >= VIRTUAL_DISPLAY_ID_BASE);
     if (mHwc) {
-        if (mode == HWC_POWER_MODE_OFF) {
+        if (hwcHasVsyncEvent(mHwc)) {
             eventControl(disp, HWC_EVENT_VSYNC, 0);
         }
-        if (hwcHasApiVersion(mHwc, HWC_DEVICE_API_VERSION_1_4)) {
-            return (status_t)mHwc->setPowerMode(mHwc, disp, mode);
-        } else {
-            return (status_t)mHwc->blank(mHwc, disp,
-                    mode == HWC_POWER_MODE_OFF ? 1 : 0);
-        }
+        return (status_t)hwcBlank(mHwc, disp, 1);
     }
     return NO_ERROR;
 }
 
 status_t HWComposer::setActiveConfig(int disp, int mode) {
     LOG_FATAL_IF(disp >= VIRTUAL_DISPLAY_ID_BASE);
-    DisplayData& dd(mDisplayData[disp]);
-    if (mHwc && hwcHasApiVersion(mHwc, HWC_DEVICE_API_VERSION_1_4)) {
-        status_t status = static_cast<status_t>(
-                mHwc->setActiveConfig(mHwc, disp, mode));
-        if (status == NO_ERROR) {
-            dd.currentConfig = mode;
-        } else {
-            ALOGE("%s Failed to set new config (%d) for display (%d)",
-                    __FUNCTION__, mode, disp);
-        }
-        return status;
-    } else {
-        LOG_FATAL_IF(mode != 0);
+    if (mHwc) {
+        return (status_t)hwcBlank(mHwc, disp, 0);
     }
     return NO_ERROR;
 }
