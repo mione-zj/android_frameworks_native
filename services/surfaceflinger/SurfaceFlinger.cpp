@@ -2075,6 +2075,12 @@ void SurfaceFlinger::invalidateHwcGeometry()
 void SurfaceFlinger::doDisplayComposition(const sp<const DisplayDevice>& hw,
         const Region& inDirtyRegion)
 {
+#ifdef MTK_HARDWARE
+    bool isHwcDisplay = hw->getHwcDisplayId() >= 0;
+    if (!isHwcDisplay && inDirtyRegion.isEmpty()) {
+        return;
+    }
+#endif
     // We only need to actually compose the display if:
     // 1) It is being handled by hardware composer, which may need this to
     //    keep its virtual display state machine in sync, or
