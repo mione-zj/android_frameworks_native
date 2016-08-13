@@ -171,11 +171,6 @@ public:
     virtual bool isOpaque(const Layer::State& s) const;
 
     /*
-     * needsDithering - true if this surface needs dithering
-     */
-    virtual bool needsDithering() const     { return mNeedsDithering; }
-
-    /*
      * isSecure - true if this surface is secure, that is if it prevents
      * screenshots or VNC servers.
      */
@@ -392,7 +387,6 @@ private:
     String8 mName;
     mutable bool mDebug;
     PixelFormat mFormat;
-    bool mNeedsDithering;
 
     // these are protected by an external lock
     State mCurrentState;

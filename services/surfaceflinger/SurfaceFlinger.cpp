@@ -169,7 +169,6 @@ SurfaceFlinger::SurfaceFlinger()
         mLastTransactionTime(0),
         mBootFinished(false),
         mGpuTileRenderEnable(false),
-        mUseDithering(false),
         mPrimaryHWVsyncEnabled(false),
         mHWVsyncAvailable(false),
         mDaltonize(false),
@@ -456,9 +455,6 @@ void SurfaceFlinger::init() {
     mHwc = new HWComposer(this,
             *static_cast<HWComposer::EventHandler *>(this));
 
-    // assume red has minimum color depth
-    mMinColorDepth = r;
-
     // get a RenderEngine for the given display / config (can't fail)
     mRenderEngine = RenderEngine::create(mEGLDisplay, mHwc->getVisualID());
 
@@ -503,9 +499,6 @@ void SurfaceFlinger::init() {
                 hw->setPowerMode(HWC_POWER_MODE_NORMAL);
             }
             mDisplays.add(token, hw);
-            if (!mUseDithering && bitsPerPixel(mHwc->getFormat(i)) <= 16) {
-                mUseDithering = true;
-            }
         }
     }
 

@@ -93,7 +93,6 @@ Layer::Layer(SurfaceFlinger* flinger, const sp<Client>& client,
         mName("unnamed"),
         mDebug(false),
         mFormat(PIXEL_FORMAT_NONE),
-        mNeedsDithering(false),
         mTransactionFlags(0),
         mQueuedFrames(0),
         mSidebandStreamChanged(false),
@@ -248,12 +247,6 @@ status_t Layer::setBuffers( uint32_t w, uint32_t h,
     mSurfaceFlingerConsumer->setDefaultBufferSize(w, h);
     mSurfaceFlingerConsumer->setDefaultBufferFormat(format);
     mSurfaceFlingerConsumer->setConsumerUsageBits(getEffectiveUsage(0));
-
-    if (mFlinger->getUseDithering()) {
-        int displayMinColorDepth = mFlinger->getMinColorDepth();
-        int layerMinColorDepth = minColorDepth(format);
-        mNeedsDithering = (layerMinColorDepth > displayMinColorDepth);
-    }
 
     return NO_ERROR;
 }
@@ -796,7 +789,6 @@ void Layer::clearWithOpenGL(const sp<const DisplayDevice>& hw,
 {
     RenderEngine& engine(mFlinger->getRenderEngine());
     computeGeometry(hw, mMesh, false);
-    engine.setDither(false);
     engine.setupFillWithColor(red, green, blue, alpha);
     engine.drawMesh(mMesh);
 }
@@ -843,7 +835,6 @@ void Layer::drawWithOpenGL(const sp<const DisplayDevice>& hw,
     texCoords[3] = vec2(right, 1.0f - top);
 
     RenderEngine& engine(mFlinger->getRenderEngine());
-    engine.setDither(needsDithering());
     engine.setupLayerBlending(mPremultipliedAlpha, isOpaque(s), s.alpha);
     engine.drawMesh(mMesh);
     engine.disableBlending();
