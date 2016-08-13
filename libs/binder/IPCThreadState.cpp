@@ -1032,17 +1032,15 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
                 "Not enough command data for brTRANSACTION");
             if (result != NO_ERROR) break;
             
-            const pid_t origPid = mCallingPid;
-            const uid_t origUid = mCallingUid;
-            Parcel reply;
-            {
             Parcel buffer;
             buffer.ipcSetDataReference(
                 reinterpret_cast<const uint8_t*>(tr.data.ptr.buffer),
                 tr.data_size,
                 reinterpret_cast<const binder_size_t*>(tr.data.ptr.offsets),
                 tr.offsets_size/sizeof(binder_size_t), freeBuffer, this);
-
+            
+            const pid_t origPid = mCallingPid;
+            const uid_t origUid = mCallingUid;
             const int32_t origStrictModePolicy = mStrictModePolicy;
             const int32_t origTransactionBinderFlags = mLastTransactionBinderFlags;
 
@@ -1072,6 +1070,7 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
 
             //ALOGI(">>>> TRANSACT from pid %d uid %d\n", mCallingPid, mCallingUid);
 
+            Parcel reply;
             status_t error;
             IF_LOG_TRANSACTIONS() {
                 TextOutput::Bundle _b(alog);
@@ -1090,7 +1089,6 @@ status_t IPCThreadState::executeCommand(int32_t cmd)
 
             } else {
                 error = the_context_object->transact(tr.code, buffer, &reply, tr.flags);
-            }
             }
 
             //ALOGI("<<<< TRANSACT from pid %d restore pid %d uid %d\n",
